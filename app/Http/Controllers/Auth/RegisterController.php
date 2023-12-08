@@ -30,12 +30,6 @@ class RegisterController extends Controller
 
         $user = $this->authService->getUser($DTO);
 
-//        if (!$user) {
-//            return redirect()
-//                ->back()
-//                ->with('error', 'Пользователь с таким номером телефона уже существует.');
-//        }
-
         if ($user) {
             return redirect()
                 ->route('auth.login')
@@ -48,6 +42,7 @@ class RegisterController extends Controller
         # Відправка смс - перевіряємо, чи відправилась - записуємо код в Redis
 
         $this->redisSmsStorageService->setKey($data['phone'], $code);
+        return redirect()->route('auth.confirm.sms');
         # Повернення на сторінку вер-ції
 
         #return redirect()->route('auth.login')->with('success', 'User registered successfully!');
