@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ConfirmSmsController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,11 +20,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('/register')->group(function () {
-    Route::view('/', 'auth.register');
-    Route::post('/create', [RegisterController::class, 'create'])->name('auth.register.create');
-    Route::post('/confirm', [ConfirmSmsController::class, 'handle'])->name('auth.register.confirm');
+Route::group(['middleware' => 'guest'], function () {
+    Route::prefix('/register')->group(function () {
+        Route::view('/', 'auth.register')->name('auth.register');
+        Route::post('/create', [RegisterController::class, 'create'])->name('auth.register.create');
+        Route::post('/confirm', [ConfirmSmsController::class, 'handle'])->name('auth.register.confirm');
+    });
+
+    Route::view('/login', 'auth.login')->name('auth.login');
+    Route::view('/confirm', 'auth.confirm')->name('auth.confirm.sms');
 });
 
-Route::view('/login', 'auth.login')->name('auth.login');
-Route::view('/confirm', 'auth.confirm')->name('auth.confirm.sms');
+Route::group(['middleware' => 'auth'], function () {
+    Route::view('/main', 'front.index')->name('front.index');
+    Route::get('/logout', [LogoutController::class, 'handle'])->name('auth.logout');
+});

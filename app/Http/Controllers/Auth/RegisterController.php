@@ -8,7 +8,6 @@ use App\Repositories\Messenger\DTO\IncomingSmsDTO;
 use App\Services\CodeGenerationService;
 use App\Services\Redis\RedisSmsStorageService;
 use App\Services\User\UserAuthService;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -28,7 +27,7 @@ class RegisterController extends Controller
             $data['phone'],
         );
 
-        $user = $this->authService->getUser($DTO);
+        $user = $this->authService->getUserByPhone($DTO);
 
         if ($user) {
             return redirect()

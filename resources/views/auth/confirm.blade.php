@@ -12,6 +12,9 @@
                           class="page-form__info form">
                         @csrf
                         <h3 class="form__title">Enter your code</h3>
+                        @if(session('error'))
+                            <p class="fw-bold text-danger">{{ session('error') }}</p>
+                        @endif
                         <div class="form__wrap">
                             <div class="form__item">
                                 <div class="form__number">

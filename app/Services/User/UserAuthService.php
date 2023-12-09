@@ -16,7 +16,7 @@ class UserAuthService
      * @param IncomingSmsDTO $DTO
      * @return null|object
      */
-    public function getUser(IncomingSmsDTO $DTO): ?object
+    public function getUserByPhone(IncomingSmsDTO $DTO): ?object
     {
         $phone = $DTO->getPhone();
 
