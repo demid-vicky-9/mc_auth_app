@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ConfirmSmsController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,8 @@ Route::group(['middleware' => 'guest'], function () {
 
     Route::view('/login', 'auth.login')->name('auth.login');
     Route::view('/confirm', 'auth.confirm')->name('auth.confirm.sms');
+
+    Route::post('/login', [LoginController::class, 'handle'])->name('login.user');
 });
 
 Route::group(['middleware' => 'auth'], function () {

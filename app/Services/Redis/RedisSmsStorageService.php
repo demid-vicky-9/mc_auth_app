@@ -28,4 +28,13 @@ class RedisSmsStorageService
     {
         Redis::set("sms:{$phone}", $value, "EX", self::EXPIRE);
     }
+
+    /**
+     * @param string $phone
+     * @return void
+     */
+    public function deleteKey(string $phone): void
+    {
+        Redis::del("sms:{$phone}");
+    }
 }

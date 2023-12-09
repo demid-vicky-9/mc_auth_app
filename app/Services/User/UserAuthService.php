@@ -2,7 +2,7 @@
 
 namespace App\Services\User;
 
-use App\Repositories\Messenger\DTO\IncomingSmsDTO;
+use App\Models\User;
 use App\Repositories\User\UserRepository;
 
 class UserAuthService
@@ -13,27 +13,11 @@ class UserAuthService
     }
 
     /**
-     * @param IncomingSmsDTO $DTO
-     * @return null|object
+     * @param string $phone
+     * @return null|User
      */
-    public function getUserByPhone(IncomingSmsDTO $DTO): ?object
+    public function getUserByPhone(string $phone): ?User
     {
-        $phone = $DTO->getPhone();
-
         return $this->repository->getUserByPhone($phone);
-    }
-
-    /**
-     * @param IncomingSmsDTO $DTO
-     * @return void
-     */
-    public function storeUserDataInSession(IncomingSmsDTO $DTO): void
-    {
-        session()->put(
-            [
-                'name'  => $DTO->getName(),
-                'phone' => $DTO->getPhone(),
-            ]
-        );
     }
 }

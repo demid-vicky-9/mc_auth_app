@@ -20,13 +20,6 @@
         <div class="footer__container">
             <div class="footer__body">
                 <a href="/" class="footer__logo header__logo">php<span>laravel</span></a>
-                <div class="footer__wrap">
-                    <div class="footer__info d-flex">
-                        <a href="#" class="footer__link me-2">Link_1</a>
-                        <a href="#" class="footer__link me-2">Link_2</a>
-                        <a href="#" class="footer__link me-2">Link_3</a>
-                    </div>
-                </div>
             </div>
         </div>
     </footer>

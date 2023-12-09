@@ -11,6 +11,9 @@
                     <form action="{{ route('auth.register.create') }}" method="post" class="page-form__info form">
                         @csrf
                         <h3 class="form__title">Register now</h3>
+                        @if(session('error'))
+                            <p class="fw-bold text-danger">{{ session('error') }}</p>
+                        @endif
                         <div class="form__wrap">
                             <div class="form__item">
                                 <label>
@@ -27,7 +30,7 @@
                             </div>
                         </div>
                         <button type="submit" class="form__button btn">Register</button>
-                        <a href="/" class="form__link">Enter</a>
+                        <a href="{{ route('auth.login') }}" class="form__link">Login</a>
                     </form>
                 </div>
             </div>

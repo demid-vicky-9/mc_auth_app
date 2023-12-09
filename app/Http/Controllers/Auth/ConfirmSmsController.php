@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\DTO\RegisterDTO;
 use App\Services\Redis\RedisSmsStorageService;
+use App\Services\User\UserAuthService;
 use App\Services\User\UserRegisterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,7 @@ class ConfirmSmsController extends Controller
 {
     public function __construct(
         protected RedisSmsStorageService $redisSmsStorageService,
+        protected UserAuthService        $authService,
         protected UserRegisterService    $registerService,
     ) {
     }
@@ -38,8 +40,19 @@ class ConfirmSmsController extends Controller
                 ->with('error', 'Wrong code!');
         }
 
-        $user = $this->registerService->store($DTO);
+        $user = $this->authService->getUserByPhone($DTO->getPhone());
+
+        if ($user == null) {
+            $newUser = $this->registerService->store($DTO);
+            Auth::login($newUser);
+            $this->redisSmsStorageService->deleteKey($phone);
+
+            return redirect()->route('front.index');
+        }
+
         Auth::login($user);
+        $this->redisSmsStorageService->deleteKey($phone);
+
         return redirect()->route('front.index');
     }
 

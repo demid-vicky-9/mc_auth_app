@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Messenger;
+namespace App\Http\Requests\User;
 
 use App\Services\Helpers\PhoneCleanerService;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class IncomingSmsRequest extends FormRequest
+class UserLoginRequest extends FormRequest
 {
     protected PhoneCleanerService $phoneCleanerService;
 
@@ -32,8 +32,8 @@ class IncomingSmsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => ['required', 'string', 'min:2', 'max:200'],
-            'phone' => ['required', 'numeric'],
+            'name'  => ['nullable'],
+            'phone' => ['required'],
         ];
     }
 

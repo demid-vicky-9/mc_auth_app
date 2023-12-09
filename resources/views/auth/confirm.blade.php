@@ -31,8 +31,6 @@
                             </div>
                         </div>
                         <button type="submit" class="form__button btn">Confirm</button>
-                        <a href="login.html" class="form__link">Enter</a>
-                        <a href="signup.html" class="form__link">Registration</a>
                     </form>
                 </div>
             </div>

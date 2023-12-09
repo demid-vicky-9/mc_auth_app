@@ -25,12 +25,12 @@ class UserRepository
 
     /**
      * @param string $phone
-     * @return null|object
+     * @return null|User
      */
-    public function getUserByPhone(string $phone): ?object
+    public function getUserByPhone(string $phone): ?User
     {
         return User::query()
                    ->where('phone', $phone)
-                   ->first();
+                   ->firstOr(fn() => null);
     }
 }

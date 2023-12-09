@@ -2,18 +2,18 @@
 
 namespace App\Repositories\Messenger\DTO;
 
-class IncomingSmsDTO
+class IncomingDTO
 {
     public function __construct(
-        protected string $name,
-        protected string $phone,
+        protected ?string $name,
+        protected string  $phone,
     ) {
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
