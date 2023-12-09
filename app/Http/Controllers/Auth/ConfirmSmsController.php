@@ -14,8 +14,6 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class ConfirmSmsController extends Controller
 {
-    protected const EX_REDIS = 300;
-
     public function __construct(
         protected RedisSmsStorageService $redisSmsStorageService,
         protected UserAuthService        $authService,
@@ -27,7 +25,7 @@ class ConfirmSmsController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(Request $request)
+    public function confirm(Request $request)
     {
         $name = session()->get('name');
         $phone = session()->get('phone');
@@ -47,23 +45,11 @@ class ConfirmSmsController extends Controller
         if ($user == null) {
             $newUser = $this->registerService->store($DTO);
             Auth::login($newUser);
-            $this->redisSmsStorageService->deleteKey($phone);
 
             return redirect()->route('front.index');
         }
 
-        $lastSentTime = $this->redisSmsStorageService->getKey($phone);
-
-        if (now()->timestamp - $lastSentTime['sentAt'] < self::EX_REDIS) {
-            return redirect()
-                ->back()
-                ->with('error', 'Please wait 5 minutes before trying again.');
-        }
-
         Auth::login($user);
-
-        #$this->redisSmsStorageService->deleteKey($phone);
-
         return redirect()->route('front.index');
     }
 

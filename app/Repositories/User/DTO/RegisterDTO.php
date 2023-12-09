@@ -5,23 +5,23 @@ namespace App\Repositories\User\DTO;
 class RegisterDTO
 {
     public function __construct(
-        protected string $name,
-        protected string $phone,
+        protected ?string $name,
+        protected ?string $phone,
     ) {
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }

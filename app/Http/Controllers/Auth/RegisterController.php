@@ -40,16 +40,20 @@ class RegisterController extends Controller
 
         if ($user) {
             return redirect()
-                ->route('auth.login')
+                ->route('login')
                 ->with('error', 'This number is already in database');
         }
 
         $this->sessionService->storeUserDataInSession($DTO);
         $code = $this->codeGenerationService->generateCode();
+        $codeData = [
+            'code'   => $code,
+            'sentAt' => now()->timestamp,
+        ];
         $message = "Authorization code: {$code}";
 
         $this->turboSmsService->send([$data['phone']], $message);
-        $this->redisSmsStorageService->setKey($data['phone'], $code);
+        $this->redisSmsStorageService->setKey($data['phone'], $codeData);
 
         return redirect()->route('auth.confirm.sms');
     }

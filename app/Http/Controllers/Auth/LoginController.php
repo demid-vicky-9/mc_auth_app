@@ -14,6 +14,8 @@ use Illuminate\Http\RedirectResponse;
 
 class LoginController extends Controller
 {
+    protected const EX_REDIS = 300;
+
     public function __construct(
         protected UserAuthService        $authService,
         protected CodeGenerationService  $codeGenerationService,
@@ -46,6 +48,12 @@ class LoginController extends Controller
 
         $this->sessionService->storeUserDataInSession($DTO, false);
 
+        $redirectResponse = $this->checkLastEnter($data['phone']);
+
+        if ($redirectResponse) {
+            return $redirectResponse;
+        }
+
         $code = $this->codeGenerationService->generateCode();
         $codeData = [
             'code'   => $code,
@@ -53,9 +61,26 @@ class LoginController extends Controller
         ];
         $message = "Authorization code: {$code}";
 
-        #$this->turboSmsService->send([$data['phone']], $message);
+        $this->turboSmsService->send([$data['phone']], $message);
         $this->redisSmsStorageService->setKey($data['phone'], $codeData);
 
         return redirect()->route('auth.confirm.sms');
+    }
+
+    /**
+     * @param string $key
+     * @return RedirectResponse|bool
+     */
+    private function checkLastEnter(string $key): RedirectResponse|bool
+    {
+        $lastSentTime = $this->redisSmsStorageService->getKey($key);
+
+        if ($lastSentTime && now()->timestamp - $lastSentTime['sentAt'] < self::EX_REDIS) {
+            return redirect()
+                ->back()
+                ->with('error', 'Please wait 5 minutes before trying again.');
+        }
+
+        return false;
     }
 }

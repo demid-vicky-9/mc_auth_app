@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <button type="submit" class="form__button btn">Register</button>
-                        <a href="{{ route('auth.login') }}" class="form__link">Login</a>
+                        <a href="{{ route('login') }}" class="form__link">Login</a>
                     </form>
                 </div>
             </div>
