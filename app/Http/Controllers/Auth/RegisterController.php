@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Messenger\IncomingSmsRequest;
 use App\Repositories\Messenger\DTO\IncomingDTO;
 use App\Services\CodeGenerationService;
+use App\Services\Messengers\SMS\TurboSmsService;
 use App\Services\Redis\RedisSmsStorageService;
 use App\Services\User\SessionService;
 use App\Services\User\UserAuthService;
@@ -18,6 +19,7 @@ class RegisterController extends Controller
         protected CodeGenerationService  $codeGenerationService,
         protected RedisSmsStorageService $redisSmsStorageService,
         protected SessionService         $sessionService,
+        protected TurboSmsService        $turboSmsService,
     ) {
     }
 
@@ -44,10 +46,11 @@ class RegisterController extends Controller
 
         $this->sessionService->storeUserDataInSession($DTO);
         $code = $this->codeGenerationService->generateCode();
+        $message = "Authorization code: {$code}";
 
-        # Відправка смс - перевіряємо, чи відправилась - записуємо код в Redis
-
+        $this->turboSmsService->send([$data['phone']], $message);
         $this->redisSmsStorageService->setKey($data['phone'], $code);
+
         return redirect()->route('auth.confirm.sms');
     }
 }

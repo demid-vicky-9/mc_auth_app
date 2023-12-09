@@ -10,23 +10,23 @@ class RedisSmsStorageService
 
     /**
      * @param string $phone
-     * @return int|null
+     * @return array|null
      */
-    public function getKey(string $phone): ?int
+    public function getKey(string $phone): ?array
     {
         $redisValue = Redis::get("sms:{$phone}");
 
-        return $redisValue !== null ? (int)$redisValue : null;
+        return $redisValue !== null ? json_decode($redisValue, true) : null;
     }
 
     /**
      * @param string $phone
-     * @param int $value
+     * @param array $value
      * @return void
      */
-    public function setKey(string $phone, int $value): void
+    public function setKey(string $phone, array $value): void
     {
-        Redis::set("sms:{$phone}", $value, "EX", self::EXPIRE);
+        Redis::set("sms:{$phone}", json_encode($value), "EX", self::EXPIRE);
     }
 
     /**

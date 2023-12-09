@@ -14,6 +14,8 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class ConfirmSmsController extends Controller
 {
+    protected const EX_REDIS = 300;
+
     public function __construct(
         protected RedisSmsStorageService $redisSmsStorageService,
         protected UserAuthService        $authService,
@@ -32,9 +34,9 @@ class ConfirmSmsController extends Controller
         $code = $request->get('code');
         $DTO = new RegisterDTO($name, $phone);
 
-        $result = $this->validateConfirmCode($phone, $code);
+        $codeInRedis = $this->validateConfirmCode($phone, $code);
 
-        if ($result === false) {
+        if ($codeInRedis === false) {
             return redirect()
                 ->route('auth.confirm.sms')
                 ->with('error', 'Wrong code!');
@@ -50,8 +52,17 @@ class ConfirmSmsController extends Controller
             return redirect()->route('front.index');
         }
 
+        $lastSentTime = $this->redisSmsStorageService->getKey($phone);
+
+        if (now()->timestamp - $lastSentTime['sentAt'] < self::EX_REDIS) {
+            return redirect()
+                ->back()
+                ->with('error', 'Please wait 5 minutes before trying again.');
+        }
+
         Auth::login($user);
-        $this->redisSmsStorageService->deleteKey($phone);
+
+        #$this->redisSmsStorageService->deleteKey($phone);
 
         return redirect()->route('front.index');
     }
@@ -65,6 +76,6 @@ class ConfirmSmsController extends Controller
     {
         $codeInRedis = $this->redisSmsStorageService->getKey($phone);
 
-        return $codeInRedis !== null && $code == $codeInRedis;
+        return $codeInRedis !== null && $code == $codeInRedis['code'];
     }
 }
