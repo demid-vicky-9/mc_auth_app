@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserLoginRequest;
 use App\Repositories\Messenger\DTO\IncomingDTO;
-use App\Services\CodeGenerationService;
-use App\Services\Messengers\SMS\TurboSmsService;
+use App\Services\Helpers\GenerateCodeAndSendSmsService;
 use App\Services\Redis\RedisSmsStorageService;
 use App\Services\User\SessionService;
 use App\Services\User\UserAuthService;
@@ -17,11 +16,10 @@ class LoginController extends Controller
     protected const EX_REDIS = 300;
 
     public function __construct(
-        protected UserAuthService        $authService,
-        protected CodeGenerationService  $codeGenerationService,
-        protected RedisSmsStorageService $redisSmsStorageService,
-        protected SessionService         $sessionService,
-        protected TurboSmsService        $turboSmsService,
+        protected UserAuthService               $authService,
+        protected SessionService                $sessionService,
+        protected RedisSmsStorageService        $redisSmsStorageService,
+        protected GenerateCodeAndSendSmsService $codeAndSendSmsService,
     ) {
     }
 
@@ -54,17 +52,7 @@ class LoginController extends Controller
             return $redirectResponse;
         }
 
-        $code = $this->codeGenerationService->generateCode();
-        $codeData = [
-            'code'   => $code,
-            'sentAt' => now()->timestamp,
-        ];
-        $message = "Authorization code: {$code}";
-
-        $this->turboSmsService->send([$data['phone']], $message);
-        $this->redisSmsStorageService->setKey($data['phone'], $codeData);
-
-        return redirect()->route('auth.confirm.sms');
+        return $this->codeAndSendSmsService->handle($data['phone']);
     }
 
     /**
