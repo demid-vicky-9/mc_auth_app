@@ -16,6 +16,7 @@ class UserRepository
         $user = new User([
             'name'  => $DTO->getName(),
             'phone' => $DTO->getPhone(),
+            'email' => $DTO->getEmail(),
         ]);
 
         $user->save();
@@ -31,6 +32,17 @@ class UserRepository
     {
         return User::query()
                    ->where('phone', $phone)
+                   ->firstOr(fn() => null);
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function getUserByEmail(string $email): ?User
+    {
+        return User::query()
+                   ->where('email', $email)
                    ->firstOr(fn() => null);
     }
 }

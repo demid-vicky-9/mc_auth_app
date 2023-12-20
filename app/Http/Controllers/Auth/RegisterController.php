@@ -40,6 +40,8 @@ class RegisterController extends Controller
                 ->with('error', 'This number is already in database');
         }
 
+        $this->sessionService->storeUserDataInSession($DTO);
+
         return $this->codeAndSendSmsService->handle($data['phone']);
     }
 }

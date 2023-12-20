@@ -7,8 +7,10 @@ use App\Repositories\User\DTO\RegisterDTO;
 use App\Services\Redis\RedisSmsStorageService;
 use App\Services\User\UserAuthService;
 use App\Services\User\UserRegisterService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -22,15 +24,17 @@ class ConfirmSmsController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @return RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function confirm(Request $request)
+    public function confirm(Request $request): RedirectResponse
     {
         $name = session()->get('name');
         $phone = session()->get('phone');
         $code = $request->get('code');
-        $DTO = new RegisterDTO($name, $phone);
+        $DTO = new RegisterDTO($name, $phone, null);
 
         $codeInRedis = $this->validateConfirmCode($phone, $code);
 

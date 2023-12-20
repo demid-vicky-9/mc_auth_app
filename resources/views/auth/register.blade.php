@@ -30,6 +30,9 @@
                             </div>
                         </div>
                         <button type="submit" class="form__button btn">Register</button>
+                        <a href="{{ route('social.auth', 'google') }}" class="form__button btn mt-2">
+                            Register with Google
+                        </a>
                         <a href="{{ route('login') }}" class="form__link">Login</a>
                     </form>
                 </div>

@@ -11,6 +11,7 @@ class LogoutController extends Controller
     public function handle(): RedirectResponse
     {
         Auth::logout();
+        session()->flush();
 
         return redirect()->route('auth.register');
     }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ConfirmSmsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,5 +44,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [LogoutController::class, 'handle'])->name('auth.logout');
 });
 
-Route::get('auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('social.login');
-Route::get('auth/{provider}/callback', [LoginController::class, 'handleProviderCallback']);
+Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.auth');
+Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);

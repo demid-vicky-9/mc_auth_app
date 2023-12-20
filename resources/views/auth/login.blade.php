@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <button type="submit" class="form__button btn">Enter</button>
-                        <a href="{{ route('social.login', 'google') }}" class="form__button btn mt-2">
+                        <a href="{{ route('social.auth', 'google') }}" class="form__button btn mt-2">
                             Login with Google
                         </a>
                         <a href="{{ route('auth.register') }}" class="form__link">New user? Register</a>
