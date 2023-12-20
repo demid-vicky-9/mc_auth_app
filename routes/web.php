@@ -42,3 +42,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('/main', 'front.index')->name('front.index');
     Route::get('/logout', [LogoutController::class, 'handle'])->name('auth.logout');
 });
+
+Route::get('auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('social.login');
+Route::get('auth/{provider}/callback', [LoginController::class, 'handleProviderCallback']);
