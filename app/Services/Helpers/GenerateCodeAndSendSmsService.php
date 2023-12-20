@@ -29,7 +29,7 @@ class GenerateCodeAndSendSmsService
         ];
         $message = "Authorization code: {$code}";
 
-        $this->turboSmsService->send([$phone], $message);
+        #$this->turboSmsService->send([$phone], $message);
         $this->redisSmsStorageService->setKey($phone, $codeData);
 
         return redirect()->route('auth.confirm.sms');

@@ -7,6 +7,7 @@ class RegisterDTO
     public function __construct(
         protected ?string $name,
         protected ?string $phone,
+        protected ?string $email,
     ) {
     }
 
@@ -24,5 +25,13 @@ class RegisterDTO
     public function getPhone(): ?string
     {
         return $this->phone;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
     }
 }
