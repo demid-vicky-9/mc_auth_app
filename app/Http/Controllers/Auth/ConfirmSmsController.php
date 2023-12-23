@@ -34,7 +34,12 @@ class ConfirmSmsController extends Controller
         $name = session()->get('name');
         $phone = session()->get('phone');
         $code = $request->get('code');
-        $DTO = new RegisterDTO($name, $phone, null);
+        $DTO = new RegisterDTO(
+            $name,
+            $phone,
+            null,
+            null
+        );
 
         $codeInRedis = $this->validateConfirmCode($phone, $code);
 

@@ -29,4 +29,13 @@ class UserAuthService
     {
         return $this->repository->getUserByEmail($email);
     }
+
+    /**
+     * @param string $id
+     * @return User|null
+     */
+    public function getUserByFbId(string $id): ?User
+    {
+        return $this->repository->getUserByFbId($id);
+    }
 }

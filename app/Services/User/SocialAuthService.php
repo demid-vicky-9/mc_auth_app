@@ -2,11 +2,10 @@
 
 namespace App\Services\User;
 
+use App\Enums\SocialProviderEnum;
 use App\Repositories\User\DTO\RegisterDTO;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -20,29 +19,36 @@ class SocialAuthService
 
     /**
      * @param string $provider
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse
+     * @return RedirectResponse
      */
-    public function redirectToProvider(string $provider
-    ): \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse {
+    public function redirectToProvider(string $provider): RedirectResponse
+    {
         return Socialite::driver($provider)->redirect();
     }
 
     /**
      * @param string $provider
-     * @return \Illuminate\Foundation\Application|Redirector|RedirectResponse|Application
+     * @return RedirectResponse
      */
-    public function handleProviderCallback(string $provider
-    ): \Illuminate\Foundation\Application|Redirector|RedirectResponse|Application {
+    public function handleProviderCallback(string $provider): RedirectResponse
+    {
         try {
             $user = Socialite::driver($provider)->user();
+            $socialProvider = SocialProviderEnum::from($provider);
+
             $DTO = new RegisterDTO(
                 $user->getName(),
                 null,
-                $user->getEmail()
+                $user->getEmail(),
+                null,
             );
             #Log::info('User Data:', (array)$user);
 
             $existingUser = $this->authService->getUserByEmail($user->getEmail());
+
+            if ($socialProvider->value === 'facebook') {
+                $existingUser = $this->authService->getUserByFbId($user->getId());
+            }
 
             if (!$existingUser) {
                 $newUser = $this->registerService->store($DTO);

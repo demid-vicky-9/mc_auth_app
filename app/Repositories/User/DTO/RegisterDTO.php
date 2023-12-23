@@ -8,6 +8,7 @@ class RegisterDTO
         protected ?string $name,
         protected ?string $phone,
         protected ?string $email,
+        protected ?string $facebookId,
     ) {
     }
 
@@ -33,5 +34,13 @@ class RegisterDTO
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFacebookId(): ?string
+    {
+        return $this->facebookId;
     }
 }

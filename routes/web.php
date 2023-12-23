@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\FbDeletionController;
+use App\Http\Controllers\PrivacyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,3 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.auth');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
+
+Route::get('/privacy', [PrivacyController::class, 'handle'])->name('privacy');
+
+Route::post('/deletion', [FbDeletionController::class, 'handle']);

@@ -14,9 +14,10 @@ class UserRepository
     public function store(RegisterDTO $DTO): User
     {
         $user = new User([
-            'name'  => $DTO->getName(),
-            'phone' => $DTO->getPhone(),
-            'email' => $DTO->getEmail(),
+            'name'        => $DTO->getName(),
+            'phone'       => $DTO->getPhone(),
+            'email'       => $DTO->getEmail(),
+            'facebook_id' => $DTO->getFacebookId(),
         ]);
 
         $user->save();
@@ -43,6 +44,17 @@ class UserRepository
     {
         return User::query()
                    ->where('email', $email)
+                   ->firstOr(fn() => null);
+    }
+
+    /**
+     * @param string $id
+     * @return User|null
+     */
+    public function getUserByFbId(string $id): ?User
+    {
+        return User::query()
+                   ->where('facebook_id', $id)
                    ->firstOr(fn() => null);
     }
 }
